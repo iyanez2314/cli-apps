@@ -4,7 +4,8 @@ from pathlib import Path
 
 import typer
 from rich import print_json
-from utils import get_config_path, updated_github_token
+
+from utils import get_config_path, updated_github_token, user_choice, write_json_dump
 
 app = typer.Typer()
 
@@ -22,16 +23,9 @@ def init():
 
     if not config_path.exists():
         try:
-            config_path.write_text(
-                json.dumps(
-                    {
-                        "githubAuthToken": "",
-                    },
-                    indent=2,
-                )
-            )
+            write_json_dump(config_path)
             typer.secho(f"Config file created at {config_path}", fg=typer.colors.GREEN)
-            updated_github_token(config_path)
+            user_choice()
         except Exception as e:
             typer.secho(f"Error creating config file: {e}", fg=typer.colors.RED)
             return
@@ -41,25 +35,17 @@ def init():
             f"Config file already exists at {config_path}. Do you want to overwrite it?"
         )
         if overwrite:
-            config_path.write_text(
-                json.dumps(
-                    {
-                        "githubAuthToken": "",
-                    },
-                    indent=2,
+            try:
+                write_json_dump(config_path)
+                typer.secho(
+                    f"Config file overwritten at {config_path}", fg=typer.colors.GREEN
                 )
-            )
-            typer.secho(
-                f"Config file overwritten at {config_path}", fg=typer.colors.GREEN
-            )
-            updated_github_token(config_path)
+                user_choice()
+            except Exception as e:
+                typer.secho(f"Error overwriting config file: {e}", fg=typer.colors.RED)
+                return
         else:
             typer.secho("Config file not modified.", fg=typer.colors.YELLOW)
-
-
-@app.command()
-def showGithubRepos():
-    pass
 
 
 @app.command()

@@ -1,7 +1,22 @@
 import json
 from pathlib import Path
 
+import questionary
 import typer
+
+
+def user_choice():
+    """
+    Prompt the user to choose an option from a list.
+    """
+    choices = [
+        "Initialize config file",
+        "Show current configuration",
+        "Update GitHub token",
+        "Exit",
+    ]
+
+    return questionary.select("What would you like to do?", choices=choices).ask()
 
 
 def get_config_path() -> Path:
@@ -10,6 +25,29 @@ def get_config_path() -> Path:
     """
     users_home = Path.home()
     return users_home / ".config" / "acommit" / "config.json"
+
+
+def write_json_dump(config_path: Path):
+    config_path.write_text(
+        json.dumps(
+            {
+                "githubAuthToken": "",
+                "llmApiKeys": {
+                    "openai": {
+                        "apiKey": "",
+                        "model": "",
+                        "baseUrl": "https://api.openai.com/v1",
+                    },
+                    "anthropic": {
+                        "apiKey": "",
+                        "model": "",
+                        "baseUrl": "https://api.anthropic.com/v1",
+                    },
+                },
+            },
+            indent=2,
+        )
+    )
 
 
 # TODO: Will have to look at this another time my retry logic is kinda fucked right now
@@ -38,7 +76,7 @@ def updated_github_token(config_path: Path):
         try:
             github_token = typer.prompt(
                 "Please enter your GitHub authentication token",
-                hide_input=False,
+                hide_input=True,
                 default=None,
             )
 
