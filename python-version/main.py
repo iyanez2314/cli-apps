@@ -5,7 +5,7 @@ from pathlib import Path
 import typer
 from rich import print_json
 
-from utils import get_config_path, updated_github_token, user_choice, write_json_dump
+from utils import get_config_path, updated_github_token, write_json_dump
 
 app = typer.Typer()
 
@@ -25,7 +25,6 @@ def init():
         try:
             write_json_dump(config_path)
             typer.secho(f"Config file created at {config_path}", fg=typer.colors.GREEN)
-            user_choice()
         except Exception as e:
             typer.secho(f"Error creating config file: {e}", fg=typer.colors.RED)
             return
@@ -40,7 +39,6 @@ def init():
                 typer.secho(
                     f"Config file overwritten at {config_path}", fg=typer.colors.GREEN
                 )
-                user_choice()
             except Exception as e:
                 typer.secho(f"Error overwriting config file: {e}", fg=typer.colors.RED)
                 return

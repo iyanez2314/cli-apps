@@ -1,22 +1,7 @@
 import json
 from pathlib import Path
 
-import questionary
 import typer
-
-
-def user_choice():
-    """
-    Prompt the user to choose an option from a list.
-    """
-    choices = [
-        "Initialize config file",
-        "Show current configuration",
-        "Update GitHub token",
-        "Exit",
-    ]
-
-    return questionary.select("What would you like to do?", choices=choices).ask()
 
 
 def get_config_path() -> Path:
